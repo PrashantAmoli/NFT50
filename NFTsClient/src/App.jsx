@@ -221,7 +221,7 @@ const App = () => {
 					<p className="sub-text">
 						{openseaAddress !== '' && <a href={openseaAddress} target="_blank" className="cts-button connect-wallet-button" />}
 					</p>
-					<p className="sub-head">{loading ? 'Loading' : ''}</p>
+					<p className="sub-head">{loading ? 'Processing Transaction...' : ''}</p>
 					{currentAccount === '' ? renderNotConnectedContainer() : renderMint()}
 				</div>
 			</div>
@@ -237,14 +237,16 @@ const App = () => {
 						</button>
 					</div>
 
-					<div>
-						<p className="sub-head">View on Testnet</p>
-						<button className="cta-button connect-wallet-button">
-							<a href={testnetAddress} target="_blank">
-								TestNet
-							</a>
-						</button>
-					</div>
+					{testnetAddress !== '' && (
+						<div>
+							<p className="sub-head">View on Testnet</p>
+							<button className="cta-button connect-wallet-button">
+								<a href={testnetAddress} target="_blank">
+									TestNet
+								</a>
+							</button>
+						</div>
+					)}
 
 					<div className="links-container">
 						<p className="sub-head">Your NFTs</p>
