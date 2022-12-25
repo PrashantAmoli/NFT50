@@ -7,7 +7,7 @@ import myEpicNft from './utils/MyEpicNft.json';
 const goerliChainId = '0x5';
 const TOTAL_MINT_COUNT = 50;
 const OPENSEA_LINK = 'https://testnets.opensea.io/collection/nftsfromprashant';
-const CONTRACT_ADDRESS = "0x602DF0A6c695fDE5DADef496aB65f8B763A5B51C";
+const CONTRACT_ADDRESS = '0x602DF0A6c695fDE5DADef496aB65f8B763A5B51C';
 
 const App = () => {
 	const [currentAccount, setCurrentAccount] = useState('');
@@ -15,19 +15,24 @@ const App = () => {
 	const [openseaAddress, setOpenseaAddress] = useState('');
 	const [correctNetwork, setCorrectNetwork] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const [mintCount, setMintCount] = useState(-1);
+	const [mintCount, setMintCount] = useState(0);
 	const [tokens, setTokens] = useState([]);
 
 	// runs our function on page load.
 	useEffect(() => {
+		setLoading(true);
 		checkIfWalletIsConnected();
 		resetLinks();
 		getNFTMintedCount();
 		if (!localStorage.getItem('tokenIds')) localStorage.setItem('tokenIds', JSON.stringify([]));
 		else setTokens(JSON.parse(localStorage.getItem('tokenIds')));
+		setTimeout(() => {
+			setLoading(false);
+		}, 1000);
 	}, []);
 
 	const checkIfWalletIsConnected = async () => {
+		setLoading(true);
 		// First make sure we have access to window.ethereum
 		const { ethereum } = window;
 
@@ -61,6 +66,7 @@ const App = () => {
 		} else {
 			console.log('No authorized account found');
 		}
+		setLoading(false);
 	};
 
 	const resetLinks = () => {
@@ -69,6 +75,7 @@ const App = () => {
 	};
 
 	const connectWallet = async () => {
+		setLoading(true);
 		try {
 			const { ethereum } = window;
 
@@ -94,10 +101,12 @@ const App = () => {
 		} catch {
 			console.log('Error connecting');
 		}
+		setLoading(false);
 	};
 
 	// This function will run our contract call and mint our NFT
 	const mintNft = async () => {
+		setLoading(true);
 		resetLinks();
 		try {
 			const { ethereum } = window;
@@ -109,10 +118,8 @@ const App = () => {
 
 				console.log('Going to pop wallet now to pay gas...');
 				const nftTxn = await connectedContract.makeAnEpicNFT();
-				setLoading(true);
 				console.log('Mining...please wait.');
 				const res = await nftTxn.wait();
-				setLoading(false);
 
 				let tokenIds = [];
 				tokenIds = JSON.parse(localStorage.getItem('tokenIds'));
@@ -127,6 +134,7 @@ const App = () => {
 		} catch (error) {
 			console.log(error);
 		}
+		setLoading(false);
 	};
 
 	const getNFTMintedCount = async () => {
@@ -162,7 +170,7 @@ const App = () => {
 				// THIS IS THE MAGIC SAUCE.
 				// This will essentially "capture" our event when our contract throws it.
 				// If you're familiar with webhooks, it's very similar to that!
-				connectedContract.on("NewEpicNFTMinted", (from, tokenId) => {
+				connectedContract.on('NewEpicNFTMinted', (from, tokenId) => {
 					console.log(from, Number(tokenId));
 					alert(
 						`Hey there! We've minted your NFT and sent it to your wallet. It may be blank right now. It can take a max of 10 min to show up on OpenSea. Here's the link: https://testnets.opensea.io/assets/${CONTRACT_ADDRESS}/${Number(
@@ -205,8 +213,8 @@ const App = () => {
 				<div className="header-container">
 					<p className="header gradient-text">NFT Fair</p>
 					<p className="sub-text">Get your unique NFT today.</p>
-					<p className="sub-text">{`${mintCount}/50 NFT's Minted`}</p>
-					<p className="sub-head">{`Connected to Goerli Network: ${correctNetwork ? 'Yes' : 'No'}`}</p>
+					{mintCount !== 0 && <p className="sub-text">{`${mintCount}/50 NFT's Minted`}</p>}
+					{currentAccount !== '' && <p className="sub-head">{`Connected to Goerli Network: ${correctNetwork ? 'Yes' : 'No'}`}</p>}
 					<p className="sub-text">
 						{testnetAddress !== '' && <a href={testnetAddress} target="_blank" className="cts-button connect-wallet-button" />}
 					</p>
@@ -255,7 +263,9 @@ const App = () => {
 				</div>
 			</div>
 			<div className="footer-container">
-				<a className="footer-text" href="https://PrashantAmoli.github.io/" target="_blank" rel="noreferrer">{`Developed by @PrashantAmoli`}</a>
+				<h3>
+					<a className="footer-text" href="https://PrashantAmoli.github.io/" target="_blank" rel="noreferrer">{`Developed by @PrashantAmoli`}</a>
+				</h3>
 			</div>
 		</div>
 	);

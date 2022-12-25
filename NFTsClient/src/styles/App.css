@@ -89,6 +89,11 @@ a {
 	animation: gradient-animation 4s ease infinite;
 }
 
+.connect-wallet-button:hover,
+.token-button:hover {
+	box-shadow: 0 5px 9px 5px rgba(255, 255, 255, 0.12);
+}
+
 .mint-button {
 	background: -webkit-linear-gradient(left, #a200d6, #ff6fdf);
 	background-size: 200% 200%;
@@ -107,16 +112,19 @@ a {
 }
 
 .footer-container {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	padding-bottom: 20px;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	color: white;
+	text-align: center;
 }
 
 .footer-text {
 	color: white;
 	font-size: 16px;
 	font-weight: bold;
+	text-align: center;
 }
 
 /* KeyFrames */
